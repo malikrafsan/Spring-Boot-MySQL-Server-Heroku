@@ -3,6 +3,7 @@ package com.malikrafsan.basdatapi.entity;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,5 +18,5 @@ public class Continent {
 
     @OneToMany(targetEntity = Nation.class, mappedBy = "continent_id", orphanRemoval = false, fetch = FetchType.LAZY)
     @Getter
-    private Set<Nation> nations;
+    private List<Nation> nations;
 }

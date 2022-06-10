@@ -19,11 +19,11 @@ public class Team {
     @Getter
     private String nation_id;
 
-    @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nation_id", insertable = false, updatable = false)
-    @Fetch(FetchMode.JOIN)
-    private Nation nation;
+//    @Getter
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "nation_id", insertable = false, updatable = false)
+//    @Fetch(FetchMode.JOIN)
+//    private Nation nation;
 
     @Getter
     private Integer world_ranking;

@@ -3,55 +3,39 @@ package com.malikrafsan.basdatapi.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 public class TeamNationDto {
-    @Getter
-    @Setter
-    private String team_id;
-
-    @Getter
-    @Setter
-    private String team;
-
     @Getter
     @Setter
     private String nation_id;
 
     @Getter
     @Setter
-    private Integer world_ranking;
-
-    @Getter
-    @Setter
-    private Integer continent_ranking;
-
-    @Getter
-    @Setter
-    private Integer nation_ranking;
-
-    @Getter
-    @Setter
     private String nation;
 
-    public TeamNationDto(String team_id, String team, String nation_id, Integer world_ranking, Integer continent_ranking, Integer nation_ranking, String nation) {
-        this.team_id = team_id;
-        this.team = team;
+    @Getter
+    @Setter
+    private String continent_id;
+
+    @Getter
+    @Setter
+    private List<TeamDto> teams;
+
+    public TeamNationDto(String nation_id, String nation, String continent_id, List<TeamDto> teams) {
         this.nation_id = nation_id;
-        this.world_ranking = world_ranking;
-        this.continent_ranking = continent_ranking;
-        this.nation_ranking = nation_ranking;
         this.nation = nation;
+        this.continent_id = continent_id;
+        this.teams = teams;
     }
 
     @Override
     public String toString() {
         return "TeamNationDto{" +
-                "team_id='" + team_id + '\'' +
-                ", team='" + team + '\'' +
-                ", nation_id='" + nation_id + '\'' +
-                ", world_ranking=" + world_ranking +
-                ", continent_ranking=" + continent_ranking +
-                ", nation_ranking=" + nation_ranking +
+                "nation_id='" + nation_id + '\'' +
                 ", nation='" + nation + '\'' +
+                ", continent_id='" + continent_id + '\'' +
+                ", teams=" + teams +
                 '}';
     }
 }
