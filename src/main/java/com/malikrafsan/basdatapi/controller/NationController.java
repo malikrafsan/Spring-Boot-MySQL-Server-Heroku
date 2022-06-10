@@ -5,6 +5,8 @@ import com.malikrafsan.basdatapi.dto.TeamDto;
 import com.malikrafsan.basdatapi.entity.Continent;
 import com.malikrafsan.basdatapi.entity.Nation;
 import com.malikrafsan.basdatapi.repository.NationRepository;
+import com.malikrafsan.basdatapi.service.ContinentService;
+import com.malikrafsan.basdatapi.service.NationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,7 +24,9 @@ import java.util.stream.StreamSupport;
 @RequestMapping(path="/nation")
 public class NationController {
     @Autowired
-    private NationRepository nationRepository;
+    private NationService nationService;
+    @Autowired
+    private ContinentService continentService;
 
     @GetMapping
     public @ResponseBody
@@ -29,13 +34,9 @@ public class NationController {
         List<Nation> actualList;
 
         if (continent.isEmpty()) {
-            actualList = StreamSupport
-                    .stream(nationRepository.findAll().spliterator(), false).toList();
+            actualList = nationService.getAllNation();
         } else {
-//            Continent c =
-
-            actualList = StreamSupport
-                    .stream(nationRepository.findByContinentId(continent).spliterator(), false).toList();
+            actualList = nationService.getNationByContinent(continent);
         }
 
         return actualList.stream()

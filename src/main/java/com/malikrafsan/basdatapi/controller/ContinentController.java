@@ -2,6 +2,7 @@ package com.malikrafsan.basdatapi.controller;
 
 import com.malikrafsan.basdatapi.entity.Continent;
 import com.malikrafsan.basdatapi.repository.ContinentRepository;
+import com.malikrafsan.basdatapi.service.ContinentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(path="/continent")
 public class ContinentController {
     @Autowired
-    private ContinentRepository continentRepository;
+    private ContinentService continentService;
 
     @GetMapping
     public @ResponseBody Iterable<Continent> getAllContinent() {
-        return continentRepository.findAll();
+        return continentService.getAllContinent();
     }
 }
