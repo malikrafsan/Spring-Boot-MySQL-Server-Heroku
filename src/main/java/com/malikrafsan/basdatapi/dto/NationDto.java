@@ -1,5 +1,6 @@
 package com.malikrafsan.basdatapi.dto;
 
+import com.malikrafsan.basdatapi.entity.Nation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,12 @@ public class NationDto {
         this.nation_id = nation_id;
         this.nation = nation;
         this.continent_id = continent_id;
+    }
+
+    public NationDto(Nation n) {
+        this.nation_id = n.getNation_id();
+        this.nation = n.getNation();
+        this.continent_id = n.getContinent_id();
     }
 
     @Override

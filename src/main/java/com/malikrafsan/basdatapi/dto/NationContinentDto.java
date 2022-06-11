@@ -1,7 +1,11 @@
 package com.malikrafsan.basdatapi.dto;
 
+import com.malikrafsan.basdatapi.entity.Continent;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class NationContinentDto {
     @Getter
@@ -14,17 +18,20 @@ public class NationContinentDto {
 
     @Getter
     @Setter
-    private String nation_id;
+    private List<NationDto> nations;
 
-    @Getter
-    @Setter
-    private String nation;
-
-    public NationContinentDto(String continent_id, String continent, String nation_id, String nation) {
+    public NationContinentDto(String continent_id, String continent, List<NationDto> nations) {
         this.continent_id = continent_id;
         this.continent = continent;
-        this.nation_id = nation_id;
-        this.nation = nation;
+        this.nations = nations;
+    }
+
+    public NationContinentDto(Continent c) {
+        this.continent_id = c.getContinent_id();
+        this.continent = c.getContinent();
+        this.nations = c.getNations().stream()
+                .map(NationDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -32,8 +39,7 @@ public class NationContinentDto {
         return "ContinentNationDto{" +
                 "continent_id='" + continent_id + '\'' +
                 ", continent='" + continent + '\'' +
-                ", nation_id='" + nation_id + '\'' +
-                ", nation='" + nation + '\'' +
+                ", nations='" + nations + '\'' +
                 '}';
     }
 }

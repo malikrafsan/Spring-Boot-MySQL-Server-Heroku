@@ -1,5 +1,6 @@
 package com.malikrafsan.basdatapi.dto;
 
+import com.malikrafsan.basdatapi.entity.Continent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,11 @@ public class ContinentDto {
     public ContinentDto(String continent_id, String continent) {
         this.continent_id = continent_id;
         this.continent = continent;
+    }
+
+    public ContinentDto(Continent c) {
+        this.continent_id = c.getContinent_id();
+        this.continent = c.getContinent();
     }
 
     @Override

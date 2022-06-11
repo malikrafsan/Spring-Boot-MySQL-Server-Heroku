@@ -1,5 +1,6 @@
 package com.malikrafsan.basdatapi.dto;
 
+import com.malikrafsan.basdatapi.entity.Team;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,6 +36,15 @@ public class TeamDto {
         this.world_ranking = world_ranking;
         this.continent_ranking = continent_ranking;
         this.nation_ranking = nation_ranking;
+    }
+
+    public TeamDto(Team t) {
+        this.team_id = t.getTeam_id();
+        this.team = t.getTeam();
+        this.nation_id = t.getNation_id();
+        this.world_ranking = t.getWorld_ranking();
+        this.continent_ranking = t.getContinent_ranking();
+        this.nation_ranking = t.getNation_ranking();
     }
 
     @Override

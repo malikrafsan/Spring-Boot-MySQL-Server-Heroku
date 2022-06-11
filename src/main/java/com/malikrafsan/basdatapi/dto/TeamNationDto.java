@@ -1,9 +1,12 @@
 package com.malikrafsan.basdatapi.dto;
 
+import com.malikrafsan.basdatapi.entity.Nation;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class TeamNationDto {
     @Getter
@@ -26,6 +29,16 @@ public class TeamNationDto {
         this.nation_id = nation_id;
         this.nation = nation;
         this.continent_id = continent_id;
+        this.teams = teams;
+    }
+
+    public TeamNationDto(Nation n) {
+        List<TeamDto> teams = n.getTeams().stream()
+                .map(TeamDto::new)
+                .collect(Collectors.toList());
+        this.nation_id = n.getNation_id();
+        this.nation = n.getNation();
+        this.continent_id = n.getContinent_id();
         this.teams = teams;
     }
 

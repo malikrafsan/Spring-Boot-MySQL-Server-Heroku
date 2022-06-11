@@ -1,5 +1,6 @@
 package com.malikrafsan.basdatapi.controller;
 
+import com.malikrafsan.basdatapi.dto.TeamDto;
 import com.malikrafsan.basdatapi.entity.Continent;
 import com.malikrafsan.basdatapi.entity.Nation;
 import com.malikrafsan.basdatapi.entity.Team;
@@ -8,11 +9,10 @@ import com.malikrafsan.basdatapi.service.ContinentService;
 import com.malikrafsan.basdatapi.service.NationService;
 import com.malikrafsan.basdatapi.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,50 +27,38 @@ import static java.util.stream.Collectors.toList;
 public class TeamController {
     @Autowired
     private TeamService teamService;
-    @Autowired
-    private NationService nationService;
-    @Autowired
-    private ContinentService continentService;
 
     @GetMapping
     public @ResponseBody
-    List<Team> getTeam(@RequestParam(value="continent", defaultValue="") String continent, @RequestParam(value="nation", defaultValue="") String nation) {
-//        return teamService.getAllTeam();
+    ResponseEntity<?> getTeam(@RequestParam(value="continent", defaultValue="") String continent, @RequestParam(value="nation", defaultValue="") String nation) {
         List<Team> actualList;
 
         if (continent.isEmpty() && nation.isEmpty()) {
-            actualList = StreamSupport
-                    .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
+            actualList = teamService.getAllTeam();
         } else if (continent.isEmpty()) {
-            Optional<Nation> n = nationService.getNationByName(nation);
-
-            if (n.isPresent()) {
-                actualList = StreamSupport
-                        .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
-                actualList = actualList.stream().filter(team -> team.getNation_id().equals(n.get().getNation_id())).collect(Collectors.toList());
-            } else {
-                actualList = new ArrayList<>();
-            }
+            actualList = teamService.getTeamByNation(nation);
         } else if (nation.isEmpty()) {
-            List<Nation> nations = nationService.getNationByContinent(continent);
-            Set<String> nationIds = nations.stream().map(Nation::getNation_id).collect(Collectors.toSet());
-            actualList = StreamSupport
-                    .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
-            actualList = actualList.stream().filter(team -> nationIds.contains(team.getNation_id())).collect(Collectors.toList());
+            actualList = teamService.getTeamByContinent(continent);
         } else {
-            Optional<Continent> c = continentService.getContinentByName(continent);
-            Optional<Nation> n = nationService.getNationByName(nation);
-
-            if (c.isPresent() && n.isPresent() && c.get().getContinent_id().equals(n.get().getContinent_id())) {
-                actualList = StreamSupport
-                        .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
-                actualList = actualList.stream().filter(team -> team.getNation_id().equals(n.get().getNation_id())).collect(Collectors.toList());
-            } else {
-                actualList = new ArrayList<>();
-            }
+            actualList = teamService.getTeamByContinentAndNation(continent, nation);
         }
 
-        return actualList;
+        if (actualList.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(actualList.stream().map(TeamDto::new).collect(Collectors.toList()), HttpStatus.OK);
     }
 
+    @GetMapping(path="/{team}")
+    public @ResponseBody
+    ResponseEntity<?> getTeamById(@PathVariable(value="team") String team) {
+        Optional<Team> t = teamService.getTeamByName(team);
+
+        if (t.isPresent()) {
+            return new ResponseEntity<>(new TeamDto(t.get()), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

@@ -2,17 +2,18 @@ package com.malikrafsan.basdatapi.controller;
 
 import com.malikrafsan.basdatapi.dto.NationDto;
 import com.malikrafsan.basdatapi.dto.TeamDto;
+import com.malikrafsan.basdatapi.dto.TeamNationDto;
 import com.malikrafsan.basdatapi.entity.Continent;
 import com.malikrafsan.basdatapi.entity.Nation;
 import com.malikrafsan.basdatapi.repository.NationRepository;
 import com.malikrafsan.basdatapi.service.ContinentService;
 import com.malikrafsan.basdatapi.service.NationService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class NationController {
 
     @GetMapping
     public @ResponseBody
-    List<NationDto> getNation(@RequestParam(value="continent", defaultValue="") String continent, @RequestParam(value="with_team", defaultValue="true") boolean withTeam) {
+    ResponseEntity<?> getNation(@RequestParam(value="continent", defaultValue="") String continent, @RequestParam(value="with_team", defaultValue="true") boolean withTeam) {
         List<Nation> actualList;
 
         if (continent.isEmpty()) {
@@ -40,8 +41,27 @@ public class NationController {
             actualList = nationService.getNationByContinent(continent);
         }
 
-        return actualList.stream()
-                .map(nation -> new NationDto(nation.getNation_id(), nation.getNation(), nation.getContinent_id()))
-                .collect(Collectors.toList());
+        if (withTeam) {
+            return new ResponseEntity<>(actualList.stream().map(TeamNationDto::new).collect(Collectors.toList()), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(actualList.stream().map(NationDto::new).collect(Collectors.toList()), HttpStatus.OK);
+    }
+
+    @GetMapping(path="/{nation}")
+    public @ResponseBody
+    ResponseEntity<?> getNationById(@PathVariable(value="nation") String nation, @RequestParam(value="with_team", defaultValue="true") boolean withTeam) {
+        Optional<Nation> n = nationService.getNationByName(nation);
+
+        if (n.isPresent()) {
+            Nation actualNation = n.get();
+            if (withTeam) {
+                return new ResponseEntity<>(new TeamNationDto(actualNation), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new NationDto(actualNation), HttpStatus.OK);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

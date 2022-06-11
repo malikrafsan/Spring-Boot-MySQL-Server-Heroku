@@ -16,8 +16,8 @@ public class ContinentService {
     @Autowired
     private ContinentRepository continentRepository;
 
-    public Iterable<Continent> getAllContinent() {
-        return continentRepository.findAll();
+    public List<Continent> getAllContinent() {
+        return StreamSupport.stream(continentRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
     public Optional<Continent> getContinentById(String id) {

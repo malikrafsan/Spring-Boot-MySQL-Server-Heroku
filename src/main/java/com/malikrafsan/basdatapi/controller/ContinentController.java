@@ -1,13 +1,20 @@
 package com.malikrafsan.basdatapi.controller;
 
+import com.malikrafsan.basdatapi.dto.ContinentDto;
+import com.malikrafsan.basdatapi.dto.NationContinentDto;
+import com.malikrafsan.basdatapi.dto.TeamNationContinentDto;
 import com.malikrafsan.basdatapi.entity.Continent;
 import com.malikrafsan.basdatapi.repository.ContinentRepository;
 import com.malikrafsan.basdatapi.service.ContinentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
 import static java.util.stream.Collectors.toList;
 
 @Controller
@@ -17,7 +24,34 @@ public class ContinentController {
     private ContinentService continentService;
 
     @GetMapping
-    public @ResponseBody Iterable<Continent> getAllContinent() {
-        return continentService.getAllContinent();
+    public @ResponseBody ResponseEntity<?> getAllContinent(@RequestParam(value="with_nation", defaultValue="true") boolean withNation, @RequestParam(value="with_team", defaultValue="true") boolean withTeam) {
+        List<Continent> actualList = continentService.getAllContinent();
+
+        if (withNation && withTeam) {
+            return new ResponseEntity<>(actualList.stream().map(TeamNationContinentDto::new).collect(toList()), HttpStatus.OK);
+        } else if (withNation) {
+            return new ResponseEntity<>(actualList.stream().map(NationContinentDto::new).collect(toList()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(actualList.stream().map(ContinentDto::new).collect(toList()), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path="/{continent}")
+    public @ResponseBody
+    ResponseEntity<?> getContinentById(@PathVariable(value="continent") String continent, @RequestParam(value="with_nation", defaultValue="true") boolean withNation, @RequestParam(value="with_team", defaultValue="true") boolean withTeam) {
+        Optional<Continent> c = continentService.getContinentByName(continent);
+
+        if (c.isPresent()) {
+            Continent actualContinent = c.get();
+            if (withNation && withTeam) {
+                return new ResponseEntity<>(new TeamNationContinentDto(actualContinent), HttpStatus.OK);
+            } else if (withNation) {
+                return new ResponseEntity<>(new NationContinentDto(actualContinent), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ContinentDto(actualContinent), HttpStatus.OK);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
