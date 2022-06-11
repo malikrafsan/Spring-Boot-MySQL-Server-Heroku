@@ -31,7 +31,7 @@ public class NationController {
 
     @GetMapping
     public @ResponseBody
-    ResponseEntity<?> getNation(@RequestParam(value="continent", required=false) String continent, @RequestParam(value="with_team", required=false) boolean withTeam) {
+    ResponseEntity<?> getNation(@RequestParam(value="continent", required=false, defaultValue = "") String continent, @RequestParam(value="with_team", required=false, defaultValue = "true") boolean withTeam) {
         List<Nation> actualList;
 
         if (continent.isEmpty()) {
@@ -49,7 +49,7 @@ public class NationController {
 
     @GetMapping(path="/{nation}")
     public @ResponseBody
-    ResponseEntity<?> getNationByName(@PathVariable(value="nation") String nation, @RequestParam(value="with_team", required=false) boolean withTeam) {
+    ResponseEntity<?> getNationByName(@PathVariable(value="nation") String nation, @RequestParam(value="with_team", required=false, defaultValue = "true") boolean withTeam) {
         Optional<Nation> n = nationService.getNationByName(nation);
 
         if (n.isPresent()) {

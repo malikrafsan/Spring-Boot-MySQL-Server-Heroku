@@ -24,7 +24,7 @@ public class ContinentController {
     private ContinentService continentService;
 
     @GetMapping
-    public @ResponseBody ResponseEntity<?> getAllContinent(@RequestParam(value="with_nation", required=false) boolean withNation, @RequestParam(value="with_team", required=false) boolean withTeam) {
+    public @ResponseBody ResponseEntity<?> getAllContinent(@RequestParam(value="with_nation", required=false, defaultValue = "true") boolean withNation, @RequestParam(value="with_team", required=false, defaultValue = "true") boolean withTeam) {
         List<Continent> actualList = continentService.getAllContinent();
 
         if (withNation && withTeam) {
@@ -38,7 +38,7 @@ public class ContinentController {
 
     @GetMapping(path="/{continent}")
     public @ResponseBody
-    ResponseEntity<?> getContinentByName(@PathVariable(value="continent") String continent, @RequestParam(value="with_nation", required=false) boolean withNation, @RequestParam(value="with_team", required=false) boolean withTeam) {
+    ResponseEntity<?> getContinentByName(@PathVariable(value="continent") String continent, @RequestParam(value="with_nation", required=false, defaultValue = "true") boolean withNation, @RequestParam(value="with_team", required=false) boolean withTeam) {
         Optional<Continent> c = continentService.getContinentByName(continent);
 
         if (c.isPresent()) {
