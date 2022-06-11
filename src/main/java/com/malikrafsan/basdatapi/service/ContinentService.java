@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class ContinentService {
@@ -23,7 +25,7 @@ public class ContinentService {
     }
 
     public Optional<Continent> getContinentByName(String name) {
-        List<Continent> actualList = StreamSupport.stream(continentRepository.findAll().spliterator(), false).toList();
+        List<Continent> actualList = StreamSupport.stream(continentRepository.findAll().spliterator(), false).collect(Collectors.toList());
 
         return actualList.stream()
                 .filter(continent -> continent.getContinent().equals(name))

@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class TeamService {
@@ -23,7 +25,7 @@ public class TeamService {
     }
 
     public Optional<Team> getTeamByName(String name) {
-        List<Team> actualList = StreamSupport.stream(teamRepository.findAll().spliterator(), false).toList();
+        List<Team> actualList = StreamSupport.stream(teamRepository.findAll().spliterator(), false).collect(Collectors.toList());
 
         return actualList.stream()
                 .filter(team -> team.getTeam().equals(name))

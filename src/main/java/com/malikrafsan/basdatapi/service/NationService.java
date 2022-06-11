@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class NationService {
@@ -20,7 +21,7 @@ public class NationService {
     private ContinentService continentService;
 
     public List<Nation> getAllNation() {
-        return StreamSupport.stream(nationRepository.findAll().spliterator(), false).toList();
+        return StreamSupport.stream(nationRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
     public Optional<Nation> getNationById(String id) {
@@ -28,7 +29,7 @@ public class NationService {
     }
 
     public Optional<Nation> getNationByName(String name) {
-        List<Nation> actualList = StreamSupport.stream(nationRepository.findAll().spliterator(), false).toList();
+        List<Nation> actualList = StreamSupport.stream(nationRepository.findAll().spliterator(), false).collect(Collectors.toList());
 
         return actualList.stream()
                 .filter(nation -> nation.getNation().equals(name))

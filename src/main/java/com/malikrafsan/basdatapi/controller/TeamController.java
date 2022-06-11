@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import static java.util.stream.Collectors.toList;
 
 @Controller
 @RequestMapping(path="/team")
@@ -39,13 +40,13 @@ public class TeamController {
 
         if (continent.isEmpty() && nation.isEmpty()) {
             actualList = StreamSupport
-                    .stream(teamService.getAllTeam().spliterator(), false).toList();
+                    .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
         } else if (continent.isEmpty()) {
             Optional<Nation> n = nationService.getNationByName(nation);
 
             if (n.isPresent()) {
                 actualList = StreamSupport
-                        .stream(teamService.getAllTeam().spliterator(), false).toList();
+                        .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
                 actualList = actualList.stream().filter(team -> team.getNation_id().equals(n.get().getNation_id())).collect(Collectors.toList());
             } else {
                 actualList = new ArrayList<>();
@@ -54,7 +55,7 @@ public class TeamController {
             List<Nation> nations = nationService.getNationByContinent(continent);
             Set<String> nationIds = nations.stream().map(Nation::getNation_id).collect(Collectors.toSet());
             actualList = StreamSupport
-                    .stream(teamService.getAllTeam().spliterator(), false).toList();
+                    .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
             actualList = actualList.stream().filter(team -> nationIds.contains(team.getNation_id())).collect(Collectors.toList());
         } else {
             Optional<Continent> c = continentService.getContinentByName(continent);
@@ -62,7 +63,7 @@ public class TeamController {
 
             if (c.isPresent() && n.isPresent() && c.get().getContinent_id().equals(n.get().getContinent_id())) {
                 actualList = StreamSupport
-                        .stream(teamService.getAllTeam().spliterator(), false).toList();
+                        .stream(teamService.getAllTeam().spliterator(), false).collect(Collectors.toList());
                 actualList = actualList.stream().filter(team -> team.getNation_id().equals(n.get().getNation_id())).collect(Collectors.toList());
             } else {
                 actualList = new ArrayList<>();
