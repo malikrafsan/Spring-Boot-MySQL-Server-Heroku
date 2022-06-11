@@ -30,7 +30,7 @@ public class TeamController {
 
     @GetMapping
     public @ResponseBody
-    ResponseEntity<?> getTeam(@RequestParam(value="continent", required = false) String continent, @RequestParam(value="nation", required = false) String nation) {
+    ResponseEntity<?> getTeam(@RequestParam(value="continent", required = false, defaultValue = "") String continent, @RequestParam(value="nation", required = false, defaultValue = "") String nation) {
         List<Team> actualList;
 
         if (continent.isEmpty() && nation.isEmpty()) {
